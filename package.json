@@ -1,0 +1,34 @@
+{
+  "name": "fen-queue",
+  "version": "0.1.0",
+  "description": "FEN queue with priorities",
+  "main": "queue.js",
+  "scripts": {
+    "test": "jasmine",
+    "tdd": "nodemon --exec jasmine",
+    "coverage": "istanbul cover node_modules/jasmine/bin/jasmine.js",
+    "e2e": "jasmine ./spec/e2e.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Scorpibear/fen-queue.git"
+  },
+  "keywords": [
+    "chess",
+    "FEN",
+    "queue",
+    "priorities"
+  ],
+  "author": "Mikhail Subach",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Scorpibear/fen-queue/issues"
+  },
+  "homepage": "https://github.com/Scorpibear/fen-queue#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^3.2.0",
+    "nodemon": "^1.18.4"
+  }
+}
