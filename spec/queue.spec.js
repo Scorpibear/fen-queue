@@ -14,4 +14,12 @@ describe('queue', () => {
       expect(queue.getAllItems()).toEqual([item]);
     });
   });
+  describe('deleteItem', () => {
+    it('deletes added item', () => {
+      const queue = new Queue();
+      queue.add(item);
+      queue.deleteItem(item.fen);
+      expect(queue.getItem(item.fen)).toBeNull();
+    });
+  });
 });

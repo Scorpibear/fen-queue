@@ -8,14 +8,21 @@ class Queue {
       this.values[priority].push(item);
     }
   }
+  deleteItem(fen) {
+    for(let p = 0; p < this.priorities; p++) {
+      let i = this.values[p].findIndex(item => item.fen == fen);
+      if(i >= 0){
+        this.values[p].splice(i, 1);
+        return;
+      }
+    }
+  }
   getItem(fen) {
-    let priority = 0;
-    while(priority < this.priorities) {
-      let item = this.values[priority].find(item => item.fen == fen);
+    for(let p = 0; p < this.priorities; p++) {
+      let item = this.values[p].find(item => item.fen == fen);
       if(item) {
         return item;
       }
-      priority++;
     }
     return null;
   }
