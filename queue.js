@@ -7,9 +7,9 @@ const comparator = (theItem) =>
   );
 
 class Queue extends EventEmitter {
-  constructor() {
+  constructor(priorities = 4) {
     super();
-    this.priorities = 4;
+    this.priorities = priorities;
     this.values = [[],[],[],[]];
     this.Console = console;
   }
@@ -17,18 +17,31 @@ class Queue extends EventEmitter {
     return {empty: 'empty', change: 'change'};
   }
   get size() {
-    return this.values.reduce((accumulator, shelf) => accumulator + shelf.length);
+    return this.values.reduce((accumulator, shelf) => accumulator + shelf.length, 0);
   }
-  add(item, priority = 0) {
-    if(item && item.fen && item.depth && !this.get(item)) {
-      // need to delete even if this.get didn't returns anything,
-      // because we can have an item with lower depth but the same fen
-      this.delete(item.fen);
+  add(newItem, priority = 0) {
+    if(newItem && newItem.fen && newItem.depth) {
+      for(let p = 0, place = 0; p < this.priorities; p++) {
+        let i = this.values[p].findIndex(item => item.fen == newItem.fen);
+        if(i >= 0) {
+          if(p > priority) {
+            this.values[p].splice(i, 1);
+            break;
+          }
+          place += i;
+          if(this.values[p][i].depth < newItem.depth) {
+            this.values[p][i].depth = newItem.depth;
+            this.emitChangeEvent();
+          }
+          return place;
+        }
+        place += this.values[p].length;
+      }
+      this.values[priority].push(newItem);
       this.emitChangeEvent();
-      this.values[priority].push(item);
-      return this.getPlace(item);
+      return this.getPlace(newItem);
     } else {
-      this.Console.error(`Could not add '${item}' to queue`);
+      this.Console.error(`Could not add '${newItem}' to queue`);
       return -1;
     }
   }
@@ -38,15 +51,15 @@ class Queue extends EventEmitter {
       if(i >= 0){
         this.values[p].splice(i, 1);
         this.emitChangeEvent();
-        if(this.size == 0) {
-          this.emitEmptyEvent();
-        }
         return;
       }
     }
   }
   emitChangeEvent() {
     this.emit(this.events.change, this.toJSON());
+    if(this.size === 0) {
+      this.emitEmptyEvent();
+    }
   }
   emitEmptyEvent() {
     this.emit(this.events.empty);

@@ -13,8 +13,14 @@ npm install fen-queue --save
 ## Usage
 ```javascript
 const Queue = require('fen-queue');
-const queue = new Queue();
-
+const maxPriorities = 4;
+const queue = new Queue(maxPriorities);
+// or queue = new Queue() with 4 by default
+const fen = 'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2';
+const depth = 50
+const priority = 2;
+queue.add({fen, depth}, priority);
+// or queue.add({fen, depth}) with priority = 0 by default
 
 ## Specification
 [FEN Queue spec](./spec/queue.js)

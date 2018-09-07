@@ -2,7 +2,8 @@ describe('queue', () => {
   const Queue = require('../queue');
   const depth = 100;
   const fen = '8/PKRpppk1/8/8/8/8/8/8';
-  const item = {fen, moves: ['d4'], depth};
+  const moves = ['d4'];
+  const item = {fen, moves, depth};
   const handler = {onEmpty: () => {}, onChange: () => {}};
   const consoleStub = {log:()=>{}, error:()=>{}};
   let queue;
@@ -78,6 +79,18 @@ describe('queue', () => {
       queue.add(item);
       expect(handler.onChange).toHaveBeenCalledWith([{a: 1, b: 2}]);
     });
+    it('does not emit empty event if the item was replaced with greater fen', () => {
+      queue.add({fen, depth: 90});
+      spyOn(queue, 'emitEmptyEvent').and.stub();
+      queue.add({fen, depth: 100});
+      expect(queue.emitEmptyEvent).not.toHaveBeenCalled();
+    });
+    it('change priority of item', () => {
+      queue.add({fen: 'fen2', depth: 40, moves}, 1);
+      queue.add(item, 1);
+      queue.add(item, 0);
+      expect(queue.getPlace(item)).toEqual(0);
+    });
   });
   describe('delete', () => {
     it('deletes added item', () => {
@@ -109,6 +122,19 @@ describe('queue', () => {
       expect(handler.onEmpty).not.toHaveBeenCalled();
     });
   });
+  describe('emitChangeEvent', () => {
+    it('emitChangeEvent also emits empty event if size is zero', () => {
+      spyOn(queue, 'emitEmptyEvent').and.stub();
+      queue.emitChangeEvent();
+      expect(queue.emitEmptyEvent).toHaveBeenCalled();
+    });
+    it('does not call emitEmptyEvent if there is at least one item in queue', () => {
+      spyOn(queue, 'emitEmptyEvent').and.stub();
+      queue.add(item);
+      expect(queue.emitEmptyEvent).not.toHaveBeenCalled();
+    });
+  });
+  
   describe('get', () => {
     it('returns null for not-existent fen', () => {
       expect(queue.get({fen: 'something'})).toBeNull();
@@ -168,6 +194,12 @@ describe('queue', () => {
       queue.on('change', handler.onChange);
       queue.load([[item],[],[],[]]);
       expect(handler.onChange).toHaveBeenCalled();
+    });
+  });
+  describe('size', () => {
+    it('increases with values added', () => {
+      queue.add(item);
+      expect(queue.size).toBe(1);
     });
   });
 });
