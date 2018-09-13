@@ -9,10 +9,11 @@ describe('queue', () => {
   let queue;
   beforeEach(() => {
     queue = new Queue();
+    queue.Console = consoleStub;
   });
   it('what is added could be get', () => {
     queue.add(item);
-    expect(queue.get(item)).toBe(item);
+    expect(queue.get(item)).toEqual(item);
   });
   it('toJSON output could be loaded', () => {
     queue.add(item);
@@ -91,6 +92,11 @@ describe('queue', () => {
       queue.add(item, 0);
       expect(queue.getPlace(item)).toEqual(0);
     });
+    it('logs a message when new item is added', () => {
+      spyOn(consoleStub, 'log').and.stub();
+      queue.add(item);
+      expect(consoleStub.log).toHaveBeenCalled();
+    });
   });
   describe('delete', () => {
     it('deletes added item', () => {
@@ -133,6 +139,12 @@ describe('queue', () => {
       queue.add(item);
       expect(queue.emitEmptyEvent).not.toHaveBeenCalled();
     });
+    it('does not allow to modify added item externally', () => {
+      const crasyItem = Object.assign({}, item);
+      queue.add(crasyItem);
+      crasyItem.fen = 'newone';
+      expect(queue.get(item)).toEqual(item);
+    });
   });
   
   describe('get', () => {
@@ -151,20 +163,32 @@ describe('queue', () => {
       queue.add(item);
       expect(queue.get({fen})).toEqual(item);
     });
+    it('modification of returned item does not modify queue', () => {
+      queue.add(item);
+      const returned = queue.get(item);
+      returned.fen = 'modified';
+      expect(queue.get(item)).toEqual(item);
+    });
   });
   describe('getFirst', () => {
     it('returns the first element from the queue', () => {
       queue.add(item);
-      expect(queue.getFirst()).toBe(item);
+      expect(queue.getFirst()).toEqual(item);
     });
     it('returns the first element from p3, if p0, p1, p2 are empty', () => {
       queue.add(item, 3);
-      expect(queue.getFirst()).toBe(item);
+      expect(queue.getFirst()).toEqual(item);
     });
     it('does not change queue', () => {
       queue.add(item);
       queue.getFirst();
       expect(queue.getAllItems()).toEqual([item]);
+    });
+    it('modification of returned item does not modify queue', () => {
+      queue.add(item);
+      const returned = queue.getFirst();
+      returned.fen = 'modified';
+      expect(queue.get(item)).toEqual(item);
     });
   });
   describe('getPlace', () => {

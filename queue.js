@@ -37,7 +37,8 @@ class Queue extends EventEmitter {
         }
         place += this.values[p].length;
       }
-      this.values[priority].push(newItem);
+      this.values[priority].push(Object.assign({}, newItem));
+      this.Console.log(`'${newItem.fen}' with depth ${newItem.depth} is added to queue ${priority}`);
       this.emitChangeEvent();
       return this.getPlace(newItem);
     } else {
@@ -68,7 +69,7 @@ class Queue extends EventEmitter {
     for(let p = 0; p < this.priorities; p++) {
       let item = this.values[p].find(comparator(theItem));
       if(item) {
-        return item;
+        return Object.assign({}, item);
       }
     }
     return null;
@@ -79,7 +80,7 @@ class Queue extends EventEmitter {
   getFirst() {
     for(let p = 0; p < this.priorities; p++) {
       if(this.values[p].length) {
-        return this.values[p][0];
+        return Object.assign({}, this.values[p][0]);
       }
     }
     return null;
