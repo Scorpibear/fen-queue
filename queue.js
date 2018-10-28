@@ -39,8 +39,9 @@ class Queue extends EventEmitter {
       }
       this.values[priority].push(Object.assign({}, newItem));
       this.Console.log(`'${newItem.fen}' with depth ${newItem.depth} is added to queue ${priority}`);
+      const place = this.getPlace(newItem);
       this.emitChangeEvent();
-      return this.getPlace(newItem);
+      return place;
     } else {
       this.Console.error(`Could not add '${newItem}' to queue`);
       return -1;

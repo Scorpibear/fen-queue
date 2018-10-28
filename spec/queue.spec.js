@@ -97,6 +97,12 @@ describe('queue', () => {
       queue.add(item);
       expect(consoleStub.log).toHaveBeenCalled();
     });
+    it('emits change event after place is calculated', () => {
+      spyOn(queue, 'getPlace').and.stub();
+      spyOn(queue, 'emitChangeEvent').and.stub();
+      queue.add(item);
+      expect(queue.getPlace).toHaveBeenCalledBefore(queue.emitChangeEvent);
+    });
   });
   describe('delete', () => {
     it('deletes added item', () => {

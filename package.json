@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jasmine",
     "tdd": "nodemon --exec jasmine",
+    "tdd-coverage": "nodemon --exec npm run coverage",
     "coverage": "istanbul cover node_modules/jasmine/bin/jasmine.js",
     "e2e": "jasmine ./spec/e2e.js"
   },
