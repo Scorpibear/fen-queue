@@ -1,6 +1,6 @@
 {
   "name": "fen-queue",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "FEN queue with priorities",
   "main": "queue.js",
   "scripts": {
