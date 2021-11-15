@@ -5,6 +5,9 @@
 
 FEN queue with priorities
 
+## Node.js version supported
+v10+
+
 ## Install
 ```
 npm install fen-queue --save
