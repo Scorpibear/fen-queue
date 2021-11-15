@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/Scorpibear/fen-queue#readme",
   "devDependencies": {
-    "eslint": "^5.4.0",
+    "eslint": "^8.2.0",
     "istanbul": "^0.4.5",
-    "jasmine": "^3.2.0",
-    "nodemon": "^1.18.4"
+    "jasmine": "^3.10.0",
+    "nodemon": "^2.0.15"
   }
 }
